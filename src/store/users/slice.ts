@@ -17,7 +17,7 @@ const DEFAULT_STATE = [
         id: "1",
         name: "Peter Doe",
         email: "peterd98@gmail.com",
-        github: "peter22",
+        github: "peter",
     },
     {
         id: "2",
@@ -29,7 +29,7 @@ const DEFAULT_STATE = [
         id: "3",
         name: "nano coca",
         email: "fernashe@hotmail.com",
-        github: "fer pepoidev",
+        github: "fer dev",
     }
 ];
 
@@ -46,16 +46,24 @@ export const usersSlice = createSlice({
     reducers: {
         addNewUser: (state, action: PayloadAction<User>) => {
             const id = crypto.randomUUID()
-            return [...state, {id, ...action.payload}]
+            state.push({id, ...action.payload})
+            //return [...state, {id, ...action.payload}]
         },
         
         deleteUserById: (state, action: PayloadAction<UserId>) => {
             const id = action.payload;
             return state.filter((user) => user.id !== id) 
+        },
+        rollbackUser: (state, action: PayloadAction<UserWithId>) => {
+            const isUserAlreadyDefined = state.some(user => user.id === action.payload.id)
+            if (!isUserAlreadyDefined) {
+                state.push(action.payload)
+                //return [...state, action.payload]
+            }
         }
     }
 })
 
 export default usersSlice.reducer
 
-export const { addNewUser, deleteUserById } = usersSlice.actions
+export const { addNewUser, deleteUserById, rollbackUser } = usersSlice.actions
